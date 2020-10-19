@@ -77,11 +77,12 @@ def string_numer_to_int(number):
     if type(number) == str and '9'>=number >= '0':
         return int(number)
     return number
+
+
 def model_fitness(data, results, model):     #returns how close model were
     pass
 
-def train(model, input_data, output_data):        
-    pass
+
 
 def adjust_weights(model):
     pass
