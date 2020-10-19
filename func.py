@@ -1,6 +1,20 @@
 
+def split_data(data, input, output, training_size, separator):       #split data to test and learn, data to wejsc, result to wyjscie
+    headers = (data.readline().split(separator))
 
-def split_data(data, results, training_size):       #split data to test and learn, data to wejsc, result to wyjscie
+    temp_lines = data.readlines()
+    lines = []
+ 
+    for line in temp_lines:
+        lines.append(line.replace('"', ""))
+
+    for i, line in enumerate(lines):
+        lines[i] = line.split(separator)
+        lines[i][-1] = lines[i][-1].replace("\n","")
+
+    print(lines[0])
+
+def shuffle_data(data):
     pass
 
 
