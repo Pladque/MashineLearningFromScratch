@@ -2,7 +2,7 @@ import random
 import math
 
 
-def split_data(data, covariate_headers, response_header, training_size, separator):       #split data to test and learn, data to wejsc, result to wyjscie
+def split_data(data, covariate_headers, response_header, training_size, separator, shuffle = True):       #split data to test and learn, data to wejsc, result to wyjscie
     headers = data.readline().split(separator)
     headers[-1] = headers[-1].replace('\n', "")
     
@@ -17,7 +17,8 @@ def split_data(data, covariate_headers, response_header, training_size, separato
         lines[i] = line.split(separator)
         lines[i][-1] = lines[i][-1].replace("\n","")
 
-    random.shuffle(lines)
+    if shuffle:
+        random.shuffle(lines)
 
     #finding indexes of needed headers
     wanted_headers_indexes_input = []
@@ -76,3 +77,6 @@ def string_numer_to_int(number):
     if type(number) == str and '9'>=number >= '0':
         return int(number)
     return number
+
+def find_index_of_header_list(covariate_headers):
+    pass
