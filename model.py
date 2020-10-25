@@ -6,7 +6,7 @@ class Model:
             self.weights.append(start_weight_value)
         self.weights.append(start_weight_value)
 
-    def train(self, train_covariates, train_response): # amount_of_learns):        
+    def train(self, train_covariates, train_response, learing_rate = 0.03): # amount_of_learns):        
         #idk if i need this
         average_cowariates = []
         average_response = 0
