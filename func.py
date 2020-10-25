@@ -65,7 +65,7 @@ def split_data(data, covariate_headers, response_header, training_size, separato
         testing_data_covariates.append(cutted_lines_covariates[training_size + ind])
         testing_data_response.append(cutted_lines_response[training_size + ind])
 
-    return training_data_covariates, training_data_response, testing_data_covariates, testing_data_response
+    return training_data_covariates, training_data_response, testing_data_covariates, testing_data_response, 
 
 def scale(data):    #scales data to 0 - 1
     for i, d in enumerate(data):
@@ -73,10 +73,29 @@ def scale(data):    #scales data to 0 - 1
             data[i] = math.tanh(int(d))
     return data
 
-def string_numer_to_int(number):
+def string_numer_to_int(number):    #it has no sens, fix later
     if type(number) == str and '9'>=number >= '0':
         return int(number)
     return number
 
 def find_index_of_header_list(covariate_headers):
     pass
+
+def get_index_of_header(headers, name):
+    return headers.index(name)
+
+def non_int_covariates_to_int(lines, header, headers, ordered_data):
+    index = get_index_of_header(headers, header)
+    print(headers)
+    print(index)
+    print(lines[0])
+    for x,line in enumerate(lines):
+        data_value_string = line[index]
+        #print(data_value_string, str(ordered_data.index(data_value_string)))
+        #make the line belowe shorter
+        #print(lines[x][index])
+        lines[x][index] = line[index].replace(data_value_string, str(ordered_data.index(data_value_string)))  #convert it to int leter
+        #print(lines[x][index])
+
+    print(lines[0])
+    return lines
