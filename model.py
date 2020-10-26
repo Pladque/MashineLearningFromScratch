@@ -1,13 +1,71 @@
 class Model:
 
-    def __init__(self,inputs_number, start_weight_value, ):
+    def __init__(self,inputs_number, start_weight_value):
         self.weights = []   #chyba bd potrzebowal inputs_number+1 zeby miec wykres dobry(w[0]+w[1]*x[0]+w[2]*x[1] itd..)
         for _ in range(inputs_number):
             self.weights.append(start_weight_value)
-        self.weights.append(start_weight_value)
+        self.weights.append(start_weight_value)      #just for test
 
-    def train(self, train_covariates, train_response, learing_rate = 0.03): # amount_of_learns):        
-        #idk if i need this
+
+    def diff(self, respone, covariate):
+        return self._predict_one(covariate) - respone[0]
+
+
+    def train(self, train_covariates, train_response, learing_rate = 0.0001, iterations_number = 1000): # amount_of_learns):          
+        for _ in range(iterations_number):  
+            if _ % 1000 == 0:
+                    print("Iteration number:", _)
+            for covariate, response in zip(train_covariates, train_response):
+                for x, weight in enumerate(self.weights):
+                    self.weights[x] = weight - float(learing_rate * self.diff(response, covariate))
+
+    
+
+    def test(self,test_covariates, test_response, if_print = False, if_round = False, rand_value = 0):
+        average_mistake = 0
+        for test_input, test_output in zip(test_covariates,test_response):
+            average_mistake += self._print_predicted_values(test_input, test_output, if_print, if_round, rand_value)
+        if if_print:
+            for x, weight in enumerate(self.weights):
+                print(x,". weight: ",weight)
+
+        return average_mistake/ len(test_response)
+         
+    def predict(self, covariates, if_round = False, rand_value = 0): #returns what number model will predict
+        response = 0
+        for x, weight in enumerate(self.weights):
+            if x < len(covariates):
+                response += weight * covariates[x]
+        response += self.weights[-1]        #last element in list a constant term
+
+        if if_round:
+            response = round(response,rand_value) 
+        return [response]
+
+    def _predict_one(self, line_covariates):
+        response = 0
+        for x,weight in enumerate(self.weights):
+            if x < len(line_covariates):
+                response += weight * line_covariates[x]
+        response += self.weights[-1]
+
+        return response
+
+    def _print_predicted_values(self, test_input, test_output, if_print, if_round, rand_value):
+        mistake = abs(self.predict(test_input, if_round, rand_value)[0]-test_output[0])
+        if if_print:
+            print("PREDICTED: ",self.predict(test_input, if_round, rand_value)," ACTUAL: ", test_output, 
+                    "COVARIATES: ",test_input,
+                    "MISTAKE: ", mistake,'points; ', 
+                    )
+        if test_output[0] != 0:
+            return 1 - (mistake / test_output[0])
+        else:
+            return 1 - (mistake / (self.predict(test_input, if_round, rand_value)[0]))
+
+
+    ### OLD TRAIN ###
+    """#idk if i need this
         average_cowariates = []
         average_response = 0
         ###
@@ -24,9 +82,9 @@ class Model:
         for x, covariate in enumerate(average_cowariates):
             average_cowariates[x] = covariate / len(train_covariates)
 
-        average_response = average_response / len(train_response) 
+        average_response = average_response / len(train_response) """
 
-        """print(average_cowariates[0])
+    """print(average_cowariates[0])
         print(average_cowariates[1])
         print(average_response) #:)
         ingredient = []
@@ -38,26 +96,3 @@ class Model:
             ingredient[i].append(train_response[i][0] -  average_response)  
         
         print(ingredient)"""
-
-
-    def test(self,test_covariates, test_response, if_print = False):
-        average_mistake = 0
-        for test_input, test_output in zip(test_covariates,test_response):
-            if if_print:
-                self._print_predicted_values(test_input, test_output)
-            average_mistake += abs(self.predict(test_input)[0]-test_output[0])
-        return average_mistake/ len(test_response)
-         
-    def predict(self, covariates): #returns what number model will predict
-        response = 0
-        for x, weight in enumerate(self.weights):
-            if x < len(covariates):
-                response += weight * covariates[x]
-        response += self.weights[-1]        #last element in list a constant term
-        return [response]
-
-    def _print_predicted_values(self, test_input, test_output):
-        print("PREDICTED: ",self.predict(test_input)," ACTUAL: ", test_output, 
-                "COVARIATES: ",test_input,
-                "MISTAKE: ", abs(self.predict(test_input)[0]-test_output[0]),'points; ', 
-                )

@@ -86,16 +86,9 @@ def get_index_of_header(headers, name):
 
 def non_int_covariates_to_int(lines, header, headers, ordered_data):
     index = get_index_of_header(headers, header)
-    print(headers)
-    print(index)
-    print(lines[0])
     for x,line in enumerate(lines):
         data_value_string = line[index]
-        #print(data_value_string, str(ordered_data.index(data_value_string)))
-        #make the line belowe shorter
-        #print(lines[x][index])
-        lines[x][index] = line[index].replace(data_value_string, str(ordered_data.index(data_value_string)))  #convert it to int leter
-        #print(lines[x][index])
+        lines[x][index] = int(line[index].replace(data_value_string, str(ordered_data.index(data_value_string))))  #convert it to int leter
 
-    print(lines[0])
+
     return lines
