@@ -17,14 +17,13 @@ class Model:
                     print("Iteration number:", _)
             for covariate, response in zip(train_covariates, train_response):
                 for x, weight in enumerate(self.weights):
-                    pred_response_and_response_diff = self.diff(response, covariate)
-                    if  skip_side_values is False or pred_response_and_response_diff <= mistake_to_skip or _  < interations_b4_skip:
-                        self.weights[x] = weight - float(learing_rate * pred_response_and_response_diff)
+                    pred_response_and_real_response_diff = self.diff(response, covariate)
+                    if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
+                        self.weights[x] -= learing_rate * pred_response_and_real_response_diff
                 for x, weight in reversed(list(enumerate(self.weights))):
-                    #print(covariate, response)
-                    pred_response_and_response_diff = self.diff(response, covariate)
-                    if  skip_side_values is False or pred_response_and_response_diff <= mistake_to_skip or _  < interations_b4_skip:
-                        self.weights[x] = weight - float(learing_rate * pred_response_and_response_diff)
+                    pred_response_and_real_response_diff = self.diff(response, covariate)
+                    if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
+                        self.weights[x] -= learing_rate * pred_response_and_real_response_diff
                     
     
 
@@ -38,7 +37,7 @@ class Model:
 
         return average_mistake/ len(test_response)
          
-    def predict(self, covariates, if_round = False, rand_value = 0): #returns what number model will predict
+    def predict(self, covariates, if_round = False, rand_value = 0): #returns prediction, its for predicting only one table with covariates
         response = 0
         for x, weight in enumerate(self.weights):
             if x < len(covariates):
@@ -54,9 +53,8 @@ class Model:
         for x,weight in enumerate(self.weights):
             if x < len(line_covariates):
                 response += weight * line_covariates[x]
-        response += self.weights[-1]
 
-        return response
+        return response + self.weights[-1]
 
     def _print_predicted_values(self, test_input, test_output, if_print, if_round, rand_value):
         mistake = abs(self.predict(test_input, if_round, rand_value)[0]-test_output[0])

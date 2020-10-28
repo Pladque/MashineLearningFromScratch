@@ -2,9 +2,9 @@ import random
 import math
 
 
-def split_data(data, covariate_headers, response_header, training_size, separator, shuffle = True, unwanted_sings = []):       #split data to test and learn, data to wejsc, result to wyjscie
+def split_data(data, covariate_headers, response_header, training_size, separator, shuffle = True, unwanted_sings = [], new_line_sing = '\n'):       #split data to test and learn, data to wejsc, result to wyjscie
     headers = data.readline().split(separator)
-    headers[-1] = headers[-1].replace('\n', "")
+    headers[-1] = headers[-1].replace(new_line_sing, "")
     
     temp_lines = data.readlines()
     lines = []
@@ -98,6 +98,5 @@ def non_int_covariates_to_int(lines, header, headers, ordered_data):
     for x,line in enumerate(lines):
         data_value_string = line[index]
         lines[x][index] = int(line[index].replace(data_value_string, str(ordered_data.index(data_value_string))))  #convert it to int leter
-
 
     return lines
