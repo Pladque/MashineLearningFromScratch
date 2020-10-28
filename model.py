@@ -1,3 +1,7 @@
+"""import pyximport; pyximport.install()
+
+from  compiling import _model_train"""
+
 class Model:
 
     def __init__(self,inputs_number, start_weight_value):
@@ -12,6 +16,9 @@ class Model:
 
 
     def train(self, train_covariates, train_response, learing_rate = 0.03, iterations_number = 1000, skip_side_values = False, interations_b4_skip = 5000, mistake_to_skip = 5): # amount_of_learns):          
+        """self = _model_train.train(self, train_covariates, train_response, learing_rate, iterations_number, 
+                            skip_side_values, interations_b4_skip, mistake_to_skip)"""
+        
         for _ in range(iterations_number):  
             if _ % 1000 == 0:
                     print("Iteration number:", _)
