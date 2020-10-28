@@ -25,7 +25,6 @@ class Model:
                     if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
                         self.weights[x] -= learing_rate * pred_response_and_real_response_diff
                     
-    
 
     def test(self,test_covariates, test_response, if_print = False, if_round = False, rand_value = 0):
         average_mistake = 0
