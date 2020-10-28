@@ -11,14 +11,21 @@ class Model:
         return self._predict_one(covariate) - respone[0]
 
 
-    def train(self, train_covariates, train_response, learing_rate = 0.0001, iterations_number = 1000): # amount_of_learns):          
+    def train(self, train_covariates, train_response, learing_rate = 0.03, iterations_number = 1000, skip_side_values = False, interations_b4_skip = 5000, mistake_to_skip = 5): # amount_of_learns):          
         for _ in range(iterations_number):  
             if _ % 1000 == 0:
                     print("Iteration number:", _)
             for covariate, response in zip(train_covariates, train_response):
                 for x, weight in enumerate(self.weights):
-                    self.weights[x] = weight - float(learing_rate * self.diff(response, covariate))
-
+                    pred_response_and_response_diff = self.diff(response, covariate)
+                    if  skip_side_values is False or pred_response_and_response_diff <= mistake_to_skip or _  < interations_b4_skip:
+                        self.weights[x] = weight - float(learing_rate * pred_response_and_response_diff)
+                for x, weight in reversed(list(enumerate(self.weights))):
+                    #print(covariate, response)
+                    pred_response_and_response_diff = self.diff(response, covariate)
+                    if  skip_side_values is False or pred_response_and_response_diff <= mistake_to_skip or _  < interations_b4_skip:
+                        self.weights[x] = weight - float(learing_rate * pred_response_and_response_diff)
+                    
     
 
     def test(self,test_covariates, test_response, if_print = False, if_round = False, rand_value = 0):
@@ -60,8 +67,10 @@ class Model:
                     )
         if test_output[0] != 0:
             return 1 - (mistake / test_output[0])
-        else:
+        elif (self.predict(test_input, if_round, rand_value)[0]) != 0:
             return 1 - (mistake / (self.predict(test_input, if_round, rand_value)[0]))
+        else:
+            return 0
 
 
     ### OLD TRAIN ###

@@ -2,7 +2,7 @@ import random
 import math
 
 
-def split_data(data, covariate_headers, response_header, training_size, separator, shuffle = True):       #split data to test and learn, data to wejsc, result to wyjscie
+def split_data(data, covariate_headers, response_header, training_size, separator, shuffle = True, unwanted_sings = []):       #split data to test and learn, data to wejsc, result to wyjscie
     headers = data.readline().split(separator)
     headers[-1] = headers[-1].replace('\n', "")
     
@@ -10,7 +10,8 @@ def split_data(data, covariate_headers, response_header, training_size, separato
     lines = []
     
     for line in temp_lines:
-        lines.append(line.replace('"', ""))
+        for sign in unwanted_sings:
+            lines.append(line.replace(sign, ""))
 
     #spliting data from string to list
     for i, line in enumerate(lines):
@@ -34,7 +35,7 @@ def split_data(data, covariate_headers, response_header, training_size, separato
             print(response_header," is not valid value. Cannot find in headers")
             return
 
-    #cutting data, to get only covariates and outpuresponse
+    #cutting data, to get only covariates and response
     cutted_lines_covariates = []
     cutted_lines_response = []
     for i, line in enumerate(lines):
@@ -45,10 +46,6 @@ def split_data(data, covariate_headers, response_header, training_size, separato
                 cutted_lines_covariates[i].append(string_numer_to_int(variable))
             elif y is wanted_header_indexes_output:
                 cutted_lines_response[i].append(string_numer_to_int(variable))
-
-    """for x, line in enumerate(cutted_lines_covariates):
-        print(cutted_lines_covariates[x])
-        cutted_lines_covariates[x] = scale(line)"""
     
     training_data_covariates = []
     training_data_response = []
@@ -67,12 +64,6 @@ def split_data(data, covariate_headers, response_header, training_size, separato
 
     return training_data_covariates, training_data_response, testing_data_covariates, testing_data_response, 
 
-def scale(data):    #scales data to 0 - 1
-    for i, d in enumerate(data):
-        if type(d) == int or '9'>=d >= '0':
-            data[i] = math.tanh(int(d))
-    return data
-
 def string_numer_to_int(number):    #it has no sens, fix later
     if type(number) == str and '9'>=number >= '0':
         return int(number)
@@ -80,6 +71,24 @@ def string_numer_to_int(number):    #it has no sens, fix later
 
 def find_index_of_header_list(covariate_headers):
     pass
+
+def scale(data, custom_divider = False, index = False):
+    if custom_divider is not False and index is False:
+        for x in range(len(data[0])):
+            for y, line in enumerate(data):
+                data[y][x] = line[x]/custom_divider
+    elif custom_divider is not False and index is not False:
+        for y, line in enumerate(data):
+            data[y][index] = line[index]/custom_divider
+    else:
+        for x in range(len(data[0])):
+            max = float("-inf")
+            for y, line in enumerate(data):
+                if max < line[x]:   max = line[x]
+            for y, line in enumerate(data):
+                data[y][x] = line[x]/max
+    return data
+
 
 def get_index_of_header(headers, name):
     return headers.index(name)
