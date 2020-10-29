@@ -1,6 +1,7 @@
-"""import pyximport; pyximport.install()"""
+import pyximport; pyximport.install
 
-"""from  compiling import _model_train"""
+import model_train
+
 from random import randint
 
 class Model:
@@ -20,10 +21,10 @@ class Model:
 
 
     def train(self, train_covariates, train_response, learing_rate = 0.03, iterations_number = 1000, skip_side_values = False, interations_b4_skip = 5000, mistake_to_skip = 5, double_learn = False, add_rand_learn = False): # amount_of_learns):          
-        """self = _model_train.train(self, train_covariates, train_response, learing_rate, iterations_number, 
-                            skip_side_values, interations_b4_skip, mistake_to_skip)"""
+        model_train.train(self, train_covariates, train_response, learing_rate, iterations_number, 
+                            skip_side_values, interations_b4_skip, mistake_to_skip, double_learn, add_rand_learn)
         
-        for _ in range(iterations_number):  
+        """for _ in range(iterations_number):  
             if _ % 1000 == 0:
                     print("Iteration:", _)
             for covariate, response in zip(train_covariates, train_response):
@@ -41,7 +42,7 @@ class Model:
                     if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
                         rand = randint(0, len(self.weights)-1)
                         self.weights[rand] -= learing_rate * pred_response_and_real_response_diff
-                    
+                    """
 
     def test(self,test_covariates, test_response, if_print = False, if_round = False, rand_value = 0, min = float('-inf'), max = float('inf')):
         average_mistake = 0

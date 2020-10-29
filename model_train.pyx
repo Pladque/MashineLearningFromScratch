@@ -1,0 +1,23 @@
+from random import randint
+
+def train(model, train_covariates, train_response, learing_rate = 0.03, iterations_number = 1000, skip_side_values = False, interations_b4_skip = 5000, mistake_to_skip = 5, double_learn = False, add_rand_learn = False):  # amount_of_learns):          
+    for _ in range(iterations_number):  
+        if _ % 1000 == 0:
+                print("Iteration:", _)
+        for covariate, response in zip(train_covariates, train_response):
+            for x in range(len(model.weights)):
+                pred_response_and_real_response_diff = model.diff(response, covariate)
+                if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
+                    model.weights[x] -= learing_rate * pred_response_and_real_response_diff
+            if double_learn:
+                for x in reversed(range(len(model.weights))):
+                    pred_response_and_real_response_diff = model.diff(response, covariate)
+                    if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
+                        model.weights[x] -= learing_rate * pred_response_and_real_response_diff
+            if add_rand_learn:
+                pred_response_and_real_response_diff = model.diff(response, covariate)
+                if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
+                    rand = randint(0, len(model.weights)-1)
+                    model.weights[rand] -= learing_rate * pred_response_and_real_response_diff
+
+
