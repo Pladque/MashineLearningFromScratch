@@ -64,10 +64,34 @@ def split_data(data, covariate_headers, response_header, training_size, separato
 
     return training_data_covariates, training_data_response, testing_data_covariates, testing_data_response, 
 
-def string_numer_to_int(number):    #it has no sens, fix later
+def string_numer_to_int(number):
     if type(number) == str and '9'>=number >= '0':
         return int(number)
     return number
+
+def save_model(model, file_name = "weights.cfg"):
+    with open(file_name, "w") as f:
+        for weight in model.weights:
+            f.write(str(weight))
+            f.write(" ; ")
+    print("model saved succesfully")
+
+def load_model(model, file_name = "weights.cfg"):
+    try:
+        with open(file_name, "r") as f:
+            weights = f.readline()
+        weights = weights.split(';')
+        weights.pop(-1)
+        if is_weights_valid(weights) is False:     #means if file is empty
+            print("model loaded failure. Check if file is not empty and if it contains valid weights")
+            return False
+        for x, weight in enumerate(weights):
+            weights[x] = float(weight)
+        model = model.load_weights(weights)
+        print("model loaded succesfully")
+    except:
+        return False
+    return True
 
 def find_index_of_header_list(covariate_headers):
     pass
@@ -97,6 +121,14 @@ def non_int_covariates_to_int(lines, header, headers, ordered_data):
     index = get_index_of_header(headers, header)
     for x,line in enumerate(lines):
         data_value_string = line[index]
-        lines[x][index] = int(line[index].replace(data_value_string, str(ordered_data.index(data_value_string))))  #convert it to int leter
+        lines[x][index] = int(line[index].replace(data_value_string, str(ordered_data.index(data_value_string))))
 
     return lines
+
+def is_weights_valid(weights):
+    for weight in weights:
+        try:
+            float(weight)
+        except:
+            return False
+    return True
