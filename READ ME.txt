@@ -1,4 +1,10 @@
 resources:
-http://mezeylab.cb.bscb.cornell.edu/labmembers/documents/supplement%205%20-%20multiple%20regression.pdf
-https://medium.com/@lope.ai/multivariate-linear-regression-from-scratch-in-python-5c4f219be6a
-https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3049417/
+  http://mezeylab.cb.bscb.cornell.edu/labmembers/documents/supplement%205%20-%20multiple%20regression.pdf
+  https://medium.com/@lope.ai/multivariate-linear-regression-from-scratch-in-python-5c4f219be6a
+  https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3049417/
+
+Goals of this project:
+  Mastering implementation of algorithms 
+  Trying to make alghoritm using only non-vide explanations
+  Getting better understanding of linear regression
+  Learning how to use cython
