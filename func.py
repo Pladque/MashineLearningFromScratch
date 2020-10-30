@@ -25,12 +25,12 @@ def split_data(data, covariate_headers, response_header, training_size, separato
     wanted_headers_indexes_input = []
     for inp in covariate_headers:
         try:
-            wanted_headers_indexes_input.append(string_numer_to_int(headers.index(inp)))
+            wanted_headers_indexes_input.append(string_numer_to_float(headers.index(inp)))
         except ValueError:
              print(inp," is not valid value. Cannot find in headers")
              return
     try:
-        wanted_header_indexes_output = string_numer_to_int(headers.index(response_header))
+        wanted_header_indexes_output = string_numer_to_float(headers.index(response_header))
     except ValueError:
             print(response_header," is not valid value. Cannot find in headers")
             return
@@ -43,9 +43,9 @@ def split_data(data, covariate_headers, response_header, training_size, separato
         cutted_lines_response.append([])
         for y, variable in enumerate(line):
             if y in wanted_headers_indexes_input:
-                cutted_lines_covariates[i].append(string_numer_to_int(variable))
+                cutted_lines_covariates[i].append(string_numer_to_float(variable))
             elif y is wanted_header_indexes_output:
-                cutted_lines_response[i].append(string_numer_to_int(variable))
+                cutted_lines_response[i].append(string_numer_to_float(variable))
     
     training_data_covariates = []
     training_data_response = []
@@ -64,10 +64,10 @@ def split_data(data, covariate_headers, response_header, training_size, separato
 
     return training_data_covariates, training_data_response, testing_data_covariates, testing_data_response, 
 
-def string_numer_to_int(number):
-    if type(number) == str and '9'>=number >= '0':
-        return int(number)
-    return number
+def string_numer_to_float(element):
+    if type(element) == str and element.replace('.','',1).isdigit():
+        return float(element)
+    return element
 
 def save_model(model, file_name = "weights.cfg"):
     with open(file_name, "w") as f:
@@ -92,9 +92,6 @@ def load_model(model, file_name = "weights.cfg"):
     except:
         return False
     return True
-
-def find_index_of_header_list(covariate_headers):
-    pass
 
 def scale(data, custom_divider = False, index = False):
     if custom_divider is not False and index is False:

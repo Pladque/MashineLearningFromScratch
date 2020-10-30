@@ -5,15 +5,14 @@ from random import shuffle
 import sys
 
 #to add:
-# cython
 # documentation
 
-covariate_header_indexes = [ "sex", "studytime","failures", "absences", "G1", "G2" ]       #has to have same order as file
-response_header = "G3"
+covariate_header_indexes = [ "sex", "studytime","failures", "absences", "G1", "G3" ]       #has to have same order as file
+response_header = "G2"
 
-LOAD_MODEL = False
+LOAD_MODEL = True
 SAVE_MODEL = False
-AMOUNT_OF_LEARNS = 1  #how many times will you let model learns, weights from best results will be saved
+AMOUNT_OF_LEARNS = 5  #how many times will you let model learns, weights from best results will be saved
 
 if __name__ == '__main__':
     start = time()
@@ -53,18 +52,24 @@ if __name__ == '__main__':
             x_train, y_train= zip(*lines_train)
             x_test, y_test = zip(*lines_test)
 
+            ### training model ###
             model.train(x_train, y_train,learing_rate = 0.03,  iterations_number = 5000, 
-                        skip_side_values = False, mistake_to_skip = 10, 
-                        interations_b4_skip = 1000, double_learn = False, add_rand_learn = False)
+                        skip_side_values = True, mistake_to_skip = 6, 
+                        interations_b4_skip = 1000, double_learn = True, additional_rand_learn = True)
             print("LOOP DONE")
-            if model.test(x_test, y_test, if_print =False, if_round = False, rand_value = 0) > best:
-                best = model.test(x_test, y_test, if_print =False, if_round = False, rand_value = 0)
+            ### testing model  and saving best score###
+            temp_score = model.test(x_test, y_test, if_print =False, if_round = False, rand_value = 0)
+            if temp_score > best:
+                best = temp_score
                 ### Saving model ###
                 if SAVE_MODEL:
-                    save_model(model)       #saving model on progress in case of lack of power
+                    save_model(model)       #saving model on progress
 
+    
+    if SAVE_MODEL:      #to print best result from last learning is SAVE_MODEL is True
+        load_model(model)
+    
     ### Printing (best) results ###
-    print()
     print("avg score ", model.test(x_test, y_test, if_print =True, 
-            if_round = False, rand_value = 0, min = 0, max = 20) * 100, "%")
+            if_round = True, rand_value = 0, min = 0, max = 20) * 100, "%")
     print("it took ", round(time() - start, 5), "s")       

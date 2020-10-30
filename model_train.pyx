@@ -1,6 +1,8 @@
 from random import randint
+from libcpp cimport bool
 
-def train(model, train_covariates, train_response, learing_rate = 0.03, iterations_number = 1000, skip_side_values = False, interations_b4_skip = 5000, mistake_to_skip = 5, double_learn = False, add_rand_learn = False):  # amount_of_learns):          
+def train(model, train_covariates, train_response, float learing_rate = 0.03, int iterations_number = 1000, bool skip_side_values = False,
+         int interations_b4_skip = 5000, float mistake_to_skip = 5, bool double_learn = False, bool add_rand_learn = False):  # amount_of_learns):          
     cdef float pred_response_and_real_response_diff
     for _ in range(iterations_number):  
         if _ % 1000 == 0:

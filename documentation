@@ -1,0 +1,150 @@
+### FUNC.PY ###
+    def split_data(data, covariate_headers, response_header, training_size, separator, shuffle = True, unwanted_sings = [], new_line_sing = '\n'):
+        data - content of file (for example csv)
+        covariate_headers - name of headers that contains needed covariate headers
+        response_header - name of header that belongs to our response column
+        training_size - procentage size / 100 of our training data (valid numbers are  (0;1)   )
+        separator - seperator in our data ( for example ";" )
+        shuffle - True if you want shuffle your data, False if not
+        unwanted_sings - if your data contains sings that you want delete, put it in the list here
+            ( for covariate [1,2,"3",4] and response ['5'] set unwanted_sings to ['"', "'"])
+        new_line_sing - will delete this sing from last cell in data
+
+        ### return ###
+        returns tuple: covariate to train, response to train, covariate for test, response to test
+
+
+    def string_numer_to_int(element):
+        element - string or number
+
+        ### return ###
+        returns element, if element is string or returns element as a number if element can be convert to float  
+        example: 
+            input 5
+            output 5
+        ---------------------
+            input "6"
+            output 6
+        ---------------------
+            input "aa"
+            output "aa"
+
+    def save_model(model, file_name = "weights.cfg"):
+        model - object model
+        file_name - name of file that will store weights
+
+        ### no returns ###
+        it just save our weights to file
+
+    def load_model(model, file_name = "weights.cfg"):
+        model - object model
+        file_name - name of file that stores weights
+
+        ### no returns ###
+        it just load our weights to model
+        example of use: load_model(model)
+
+    def scale(data, custom_divider = False, index = False):
+        data - list of list of float(no string) data. 
+        custom_divider - your divider if you want use your own divider, 
+                        False if you want alghoritm find max and use it as divider 
+        index - if you used your own divider, you have to pass what index you want to scale
+
+        ### return ### 
+        scaled data 
+
+        example:
+            tab = scale([[0],[1],[2]])
+            # now tab is equal [[0],[0.5], [1]]
+            ------------------------------------
+            tab = scale([[0],[1],[2]], 4, 2)
+            # now tab is equal [[0],[2], [0.5]]
+            ------------------------------------
+            tab = scale([[0],["F"],[2]])
+            # ERROR
+    
+    def get_index_of_header(headers, name):
+        headers - list
+        name - name of index you are looking for 
+        ### return ###
+        returns index of given header name
+
+    def non_int_covariates_to_int(lines, header, headers, ordered_data):
+        lines - list of list of float(no string) data. 
+        header - header that belong to covarates you want to change from str to int
+        headers - all headers in orginal order 
+                (if you have in csv file headers like ["one", "two", "three", "four"]
+                and you want to use only ["one", "two" "four"], headers should be
+                also ["one", "two" "four"] - ["two", "one" "four"] is not valid)
+        ordered_data - all possible values of cavariates you want to change
+
+        ### no return ###
+        example: 
+            headers = ["G1",    "G2",  "sex", "study_time"]
+            tab =   [   [1,     2,      'F',        4], 
+                        [0,     2,      'M',        8]    ]
+            non_int_covariates_to_int(tab, "sex", headers, ["F","M"]):
+            # now tab is equal [    [1,     2,      0,        4], 
+                                    [0,     2,      1,        8]  ]
+
+    def is_weights_valid(weights):
+        weights - list of floats
+
+        ### return ###
+        return  True if given list contains only  numbers
+                False if not
+
+### model.py ###
+def train(self, train_covariates, train_response, learing_rate = 0.03, iterations_number = 1000, skip_side_values = False, 
+                        interations_b4_skip = 5000, mistake_to_skip = 5, double_learn = False, additional_rand_learn = False):      
+    # neccesery parameters:
+        train_covariates - 
+        train_response - 
+        learing_rate - 
+        iterations_number - 
+    # additional fetures: 
+        skip_side_values - 
+        interations_b4_skip - 
+        mistake_to_skip - 
+        double_learn - 
+        additional_rand_learn - 
+
+    #### no return ###
+
+
+def test(self,test_covariates, test_response, if_print = False, if_round = False, rand_value = 0, min = float('-inf'), max = float('inf')):
+    # neccesery parameters:
+        test_covariates - 
+        test_response - 
+    # additional fetures: 
+        if_print -
+        if_round -  
+        rand_value - 
+        min - 
+        max - 
+
+def predict(self, covariates, if_round = False, rand_value = 0, min = float('-inf'), max = float('inf')): #returns prediction, its for predicting only one table with covariates
+    # neccesery parameters:
+        covariates - 
+    # additional fetures: 
+        if_round -  
+        rand_value - 
+        min - 
+        max - 
+
+
+def _predict_and_print_predicted_values(self,  covariates, response, if_print, if_round, rand_value, min = float('-inf'), max = float('inf')):
+    # neccesery parameters:
+        covariates - 
+        response - 
+    # additional fetures:
+        if_print -  
+        if_round -  
+        rand_value - 
+        min - 
+        max - 
+
+
+
+def load_weights(self, weights):
+    weights - list of float
