@@ -3,8 +3,8 @@ from model import Model
 from time import time
 from random import shuffle
 
-covariate_header_indexes = [ "sex", "studytime","failures", "absences", "G1", "G3" ]       #has to have same order as file
-response_header = "G2"
+covariate_header_indexes = [ "sex", "studytime","failures", "absences", "G1", "G2" ]       #has to have same order as file
+response_header = "G3"
 
 if __name__ == '__main__':
     start = time()
