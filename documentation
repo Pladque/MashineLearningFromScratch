@@ -11,38 +11,38 @@
         new_line_sing - will delete this sing from last cell in data
 
         ### return ###
-        returns tuple: covariate to train, response to train, covariate for test, response to test
+            returns tuple: covariate to train, response to train, covariate for test, response to test
 
 
     def string_numer_to_int(element):
         element - string or number
 
         ### return ###
-        returns element, if element is string or returns element as a number if element can be convert to float  
-        example: 
-            input 5
-            output 5
-        ---------------------
-            input "6"
-            output 6
-        ---------------------
-            input "aa"
-            output "aa"
+            returns element, if element is string or returns element as a number if element can be convert to float  
+            example: 
+                input 5
+                output 5
+            ---------------------
+                input "6"
+                output 6
+            ---------------------
+                input "aa"
+                output "aa"
 
     def save_model(model, file_name = "weights.cfg"):
         model - object model
         file_name - name of file that will store weights
 
         ### no returns ###
-        it just save our weights to file
+            it just save our weights to file
 
     def load_model(model, file_name = "weights.cfg"):
         model - object model
         file_name - name of file that stores weights
 
         ### no returns ###
-        it just load our weights to model
-        example of use: load_model(model)
+            it just load our weights to model
+            example of use: load_model(model)
 
     def scale(data, custom_divider = False, index = False):
         data - list of list of float(no string) data. 
@@ -51,7 +51,7 @@
         index - if you used your own divider, you have to pass what index you want to scale
 
         ### return ### 
-        scaled data 
+            scaled data 
 
         example:
             tab = scale([[0],[1],[2]])
@@ -67,7 +67,7 @@
         headers - list
         name - name of index you are looking for 
         ### return ###
-        returns index of given header name
+            returns index of given header name
 
     def non_int_covariates_to_int(lines, header, headers, ordered_data):
         lines - list of list of float(no string) data. 
@@ -94,57 +94,82 @@
         return  True if given list contains only  numbers
                 False if not
 
-### model.py ###
+### MODEL.PY ###
+
 def train(self, train_covariates, train_response, learing_rate = 0.03, iterations_number = 1000, skip_side_values = False, 
-                        interations_b4_skip = 5000, mistake_to_skip = 5, double_learn = False, additional_rand_learn = False):      
+                        interations_b4_skip = 5000, mistake_to_skip = 5, double_learn = False, additional_rand_learn = False,
+                        power_of_decreasing = 0):
     # neccesery parameters:
-        train_covariates - 
-        train_response - 
-        learing_rate - 
-        iterations_number - 
+        train_covariates - list of list of number covariates
+        train_response - list of list of number (sigle) responses, like [[1],[1],[2],[8]]
+        learing_rate - float, how fast alghorith will learn and how precise it will be
+        iterations_number - int, number of iterations
     # additional fetures: 
-        skip_side_values - 
-        interations_b4_skip - 
-        mistake_to_skip - 
-        double_learn - 
-        additional_rand_learn - 
+        skip_side_values - bool, True if you want to skip values, that are far from predictions
+        interations_b4_skip - int, how many iterations will pass before algo start skips side values
+        mistake_to_skip - float, how big misteke should be to skip
+        double_learn -   bool, True if you want algo to learn twice at iteration. Secound learn will be backwards
+        additional_rand_learn - bool, True if you want algo to learn once more per iteration. Algo will pick randomly 
+                                        index of weight to adjust
+        power_of_decreasing - float, if not zero it will decrease learning rate every 100 iterations by power_of_decreasing learning
+                                        rate by this value ( for learing_rate=1, power_of_decreasing=0.1, after 95 iterations
+                                        learning rate would be 1 but after 100 iterations learning rate would be equal 0.9)
+                                        
 
     #### no return ###
+
+    ### NOTE ###
+        Best results are for double_learn = True and additional_rand_learn = True, but it makes alghoritm about 2 times slower
 
 
 def test(self,test_covariates, test_response, if_print = False, if_round = False, rand_value = 0, min = float('-inf'), max = float('inf')):
     # neccesery parameters:
-        test_covariates - 
-        test_response - 
+        test_covariates - list of list of number covariates
+        test_response - list of list of number (sigle) responses, like [[1],[1],[2],[8]]
     # additional fetures: 
-        if_print -
-        if_round -  
-        rand_value - 
-        min - 
-        max - 
+        if_print -  True if you want to print covariates, resposne, prediction and mistake from test_response
+        if_round -  True if you want to round predicted response
+        rand_value - int, how many digits will be rounded
+        min - float, if you set min value it will change every number less then min to min 
+        max - float, if you set min value it will change every number more than max to max 
+
+    ### return ###
+        returns average score. Score is counted as it is explained in _predict_and_print_predicted_values(...) funciton
 
 def predict(self, covariates, if_round = False, rand_value = 0, min = float('-inf'), max = float('inf')): #returns prediction, its for predicting only one table with covariates
     # neccesery parameters:
-        covariates - 
+        covariates - list of number covariates
     # additional fetures: 
-        if_round -  
-        rand_value - 
-        min - 
-        max - 
+        if_round -  True if you want to round predicted response
+        rand_value - int, how many digits will be rounded
+        min - float, if you set min value it will change every number less then min to min 
+        max - float, if you set min value it will change every number more than max to max 
+
+    ### return ###
+        predicted value as a list
 
 
 def _predict_and_print_predicted_values(self,  covariates, response, if_print, if_round, rand_value, min = float('-inf'), max = float('inf')):
     # neccesery parameters:
-        covariates - 
-        response - 
+        covariates - list of number covariates
+        response -  list of number response (one response but in list!)
     # additional fetures:
-        if_print -  
-        if_round -  
-        rand_value - 
-        min - 
-        max - 
+        if_print -  True if you want to print covariates, resposne, prediction and mistake from test_response
+        if_round -  True if you want to round predicted response
+        rand_value - int, how many digits will be rounded
+        min - float, if you set min value it will change every number less then min to min 
+        max - float, if you set min value it will change every number more than max to max 
 
-
+    ### return ###
+        score, how close our prediction was. 1 is best, everything less than 1 is worst.
+            for example, if we our prediction is 1, but real response is 10, so our mistake is 9
+            we would get in return 1 - abs(9/10) = 0.1. if real response is 0, we would use 
+            our prediction instead, if it is 0 too, we will return 0
 
 def load_weights(self, weights):
     weights - list of float
+
+    example of use:
+        amount_of_covariates = 5
+        model = Model(amount_of_covariates, start_weight_value = 1)
+        load_model(model)
