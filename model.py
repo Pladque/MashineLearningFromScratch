@@ -1,5 +1,4 @@
 import pyximport; pyximport.install
-
 import model_train
 
 from random import randint
@@ -16,33 +15,10 @@ class Model:
                 self.weights.append(weight)
 
 
-    def diff(self, respone, covariate):
-        return self._predict_one(covariate) - respone[0]
-
-
     def train(self, train_covariates, train_response, learing_rate = 0.03, iterations_number = 1000, skip_side_values = False, interations_b4_skip = 5000, mistake_to_skip = 5, double_learn = False, add_rand_learn = False): # amount_of_learns):          
         model_train.train(self, train_covariates, train_response, learing_rate, iterations_number, 
                             skip_side_values, interations_b4_skip, mistake_to_skip, double_learn, add_rand_learn)
         
-        """for _ in range(iterations_number):  
-            if _ % 1000 == 0:
-                    print("Iteration:", _)
-            for covariate, response in zip(train_covariates, train_response):
-                for x in range(len(self.weights)):
-                    pred_response_and_real_response_diff = self.diff(response, covariate)
-                    if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
-                        self.weights[x] -= learing_rate * pred_response_and_real_response_diff
-                if double_learn:
-                    for x in reversed(range(len(self.weights))):
-                        pred_response_and_real_response_diff = self.diff(response, covariate)
-                        if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
-                            self.weights[x] -= learing_rate * pred_response_and_real_response_diff
-                if add_rand_learn:
-                    pred_response_and_real_response_diff = self.diff(response, covariate)
-                    if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
-                        rand = randint(0, len(self.weights)-1)
-                        self.weights[rand] -= learing_rate * pred_response_and_real_response_diff
-                    """
 
     def test(self,test_covariates, test_response, if_print = False, if_round = False, rand_value = 0, min = float('-inf'), max = float('inf')):
         average_mistake = 0
@@ -68,13 +44,6 @@ class Model:
             response = round(response,rand_value) 
         return [response]
 
-    def _predict_one(self, line_covariates):
-        response = 0
-        for x,weight in enumerate(self.weights):
-            if x < len(line_covariates):
-                response += weight * line_covariates[x]
-
-        return response + self.weights[-1]
 
     def _predict_and_print_predicted_values(self, test_input, test_output, if_print, if_round, rand_value, min = float('-inf'), max = float('inf')):
         mistake = abs(self.predict(test_input, if_round, rand_value, min, max)[0]-test_output[0])
@@ -94,7 +63,16 @@ class Model:
         self.weights = weights
 
 
-    ### OLD TRAIN ###
+    ### OLD  ###
+    """def _predict_one(self, line_covariates):
+        response = 0
+        for x,weight in enumerate(self.weights):
+            if x < len(line_covariates):
+                response += weight * line_covariates[x]
+
+        return response + self.weights[-1]"""
+
+
     """#idk if i need this
         average_cowariates = []
         average_response = 0
@@ -126,3 +104,6 @@ class Model:
             ingredient[i].append(train_response[i][0] -  average_response)  
         
         print(ingredient)"""
+
+    """def diff(self, respone, covariate):
+        return self._predict_one(covariate) - respone[0]"""
