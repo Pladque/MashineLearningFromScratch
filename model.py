@@ -18,8 +18,6 @@ class Model:
                             skip_side_values, interations_b4_skip, mistake_to_skip, double_learn, additional_rand_learn)
 
         
-        
-
     def test(self,test_covariates, test_response, if_print = False, if_round = False, rand_value = 0, min = float('-inf'), max = float('inf')):
         average_mistake = 0
         for test_input, test_output in zip(test_covariates,test_response):
@@ -53,9 +51,9 @@ class Model:
                     "MISTAKE: ", mistake,'points; ', 
                     )
         if response[0] != 0:
-            return abs(1 - (mistake / response[0]))
+            return 1 - abs(mistake / response[0])
         elif (self.predict(covariates, if_round, rand_value)[0]) != 0:
-            return abs(1 - (mistake / (self.predict(covariates, if_round, rand_value)[0])))
+            return 1 -  abs(mistake / (self.predict(covariates, if_round, rand_value)[0]))
         else:
             return 0
 

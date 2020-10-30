@@ -4,13 +4,10 @@ from time import time
 from random import shuffle
 import sys
 
-#to add:
-# documentation
-
 covariate_header_indexes = [ "sex", "studytime","failures", "absences", "G1", "G3" ]       #has to have same order as file
 response_header = "G2"
 
-LOAD_MODEL = True
+LOAD_MODEL = False
 SAVE_MODEL = False
 AMOUNT_OF_LEARNS = 5  #how many times will you let model learns, weights from best results will be saved
 

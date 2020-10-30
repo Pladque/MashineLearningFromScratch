@@ -97,8 +97,8 @@
 ### MODEL.PY ###
 
 def train(self, train_covariates, train_response, learing_rate = 0.03, iterations_number = 1000, skip_side_values = False, 
-                        interations_b4_skip = 5000, mistake_to_skip = 5, double_learn = False, additional_rand_learn = False,
-                        power_of_decreasing = 0):
+                        interations_b4_skip = 5000, mistake_to_skip = 5, double_learn = False, additional_rand_learn = False):
+                        
     # neccesery parameters:
         train_covariates - list of list of number covariates
         train_response - list of list of number (sigle) responses, like [[1],[1],[2],[8]]
@@ -111,9 +111,6 @@ def train(self, train_covariates, train_response, learing_rate = 0.03, iteration
         double_learn -   bool, True if you want algo to learn twice at iteration. Secound learn will be backwards
         additional_rand_learn - bool, True if you want algo to learn once more per iteration. Algo will pick randomly 
                                         index of weight to adjust
-        power_of_decreasing - float, if not zero it will decrease learning rate every 100 iterations by power_of_decreasing learning
-                                        rate by this value ( for learing_rate=1, power_of_decreasing=0.1, after 95 iterations
-                                        learning rate would be 1 but after 100 iterations learning rate would be equal 0.9)
                                         
 
     #### no return ###
