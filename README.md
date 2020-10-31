@@ -9,19 +9,30 @@ resources:
 data from: https://archive.ics.uci.edu/ml/datasets/Student+Performance
 
 Goals of this project:
+
   Mastering implementation of algorithms 
-  Trying to make alghoritm using only non-vide explanations
+  
+  Trying to make alghoritm using only non-video explanations
+  
   Getting better understanding of linear regression
+  
   Learning how to use cython
 
 How to install:
+
 1. dowloand files
+
 2. install cython (pip install cython or pip3 install cython)
+
 2.5. (install other packages you do not have)
+
 3. Try to run 'exaple.py', if its showing you iterations thats mean 
   you are ready to go!
+  
 4 if it gives you errors, try:
+
   -'python3 setup.py build_ext --inplace' in folder where you have  
     setup.py
+    
   - Check if you have weights.cfg if you are trying to load model
     (LOAD_MODEL is True in exaple.py)
