@@ -24,14 +24,13 @@ How to install:
 
 2. install cython (pip install cython or pip3 install cython)
 
-2.5. (install other packages you do not have)
+// (install other packages that you dont have)
 
-3. Try to run 'exaple.py', if its showing you iterations thats mean 
-  you are ready to go!
+3. Try to run 'exaple.py', if its showing you iterations thats mean you are ready to go!
   
-4 if it gives you errors, try:
+4. if it gives you errors, try:
 
-  -'python3 setup.py build_ext --inplace' in folder where you have  
+  - 'python3 setup.py build_ext --inplace' in folder where you have  
     setup.py
     
   - Check if you have weights.cfg if you are trying to load model
