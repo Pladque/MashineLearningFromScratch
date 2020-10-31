@@ -7,7 +7,7 @@ import sys
 covariate_header_indexes = [ "sex", "studytime","failures", "absences", "G1", "G2" ]       #has to have same order as file
 response_header = "G3"
 
-LOAD_MODEL = False
+LOAD_MODEL = True
 SAVE_MODEL = False
 AMOUNT_OF_LEARNS = 20  #how many times will you let model learns, weights from best results will be saved
 
@@ -50,9 +50,9 @@ if __name__ == '__main__':
             x_test, y_test = zip(*lines_test)
 
             ### training model ###
-            model.train(x_train, y_train,learing_rate = 0.03,  iterations_number = 5000, 
-                        skip_side_values = True, mistake_to_skip = 6, 
-                        interations_b4_skip = 1000, double_learn = True, additional_rand_learn = True)
+            model.train(x_train, y_train,learing_rate = 0.02,  iterations_number = 5000, 
+                        skip_side_values = True, mistake_to_skip = 10, 
+                        interations_b4_skip = 3000, double_learn = True, additional_rand_learn = True)
             print("LOOP DONE")
             ### testing model  and saving best score###
             temp_score = model.test(x_test, y_test, if_print =False, if_round = False, rand_value = 0)
