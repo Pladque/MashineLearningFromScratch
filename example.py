@@ -8,7 +8,7 @@ covariate_header_indexes = [ "sex", "studytime","failures", "absences", "G1", "G
 response_header = "G3"
 
 LOAD_MODEL = False
-SAVE_MODEL = False
+SAVE_MODEL = True
 AMOUNT_OF_LEARNS = 1  #how many times will you let model learns, weights from best results will be saved
 
 if __name__ == '__main__':

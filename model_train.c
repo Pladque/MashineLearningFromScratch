@@ -1070,6 +1070,14 @@ static CYTHON_INLINE PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* k
 #define __Pyx_PyObject_GetItem(obj, key)  PyObject_GetItem(obj, key)
 #endif
 
+/* PyIntBinop.proto */
+#if !CYTHON_COMPILING_IN_PYPY
+static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, long intval, int inplace, int zerodivision_check);
+#else
+#define __Pyx_PyInt_AddObjC(op1, op2, intval, inplace, zerodivision_check)\
+    (inplace ? PyNumber_InPlaceAdd(op1, op2) : PyNumber_Add(op1, op2))
+#endif
+
 /* PyThreadStateGet.proto */
 #if CYTHON_FAST_THREAD_STATE
 #define __Pyx_PyThreadState_declare  PyThreadState *__pyx_tstate;
@@ -1110,14 +1118,6 @@ static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject 
 static void __Pyx_WriteUnraisable(const char *name, int clineno,
                                   int lineno, const char *filename,
                                   int full_traceback, int nogil);
-
-/* PyIntBinop.proto */
-#if !CYTHON_COMPILING_IN_PYPY
-static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, long intval, int inplace, int zerodivision_check);
-#else
-#define __Pyx_PyInt_AddObjC(op1, op2, intval, inplace, zerodivision_check)\
-    (inplace ? PyNumber_InPlaceAdd(op1, op2) : PyNumber_Add(op1, op2))
-#endif
 
 /* Import.proto */
 static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
@@ -1196,7 +1196,7 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 /* Module declarations from 'libcpp' */
 
 /* Module declarations from 'model_train' */
-static float __pyx_f_11model_train_diff(PyObject *, PyObject *, PyObject *); /*proto*/
+static float __pyx_f_11model_train_diff(PyObject *, float, PyObject *); /*proto*/
 static float __pyx_f_11model_train__predict_one(PyObject *, PyObject *); /*proto*/
 #define __Pyx_MODULE_NAME "model_train"
 extern int __pyx_module_is_main_model_train;
@@ -1523,10 +1523,11 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
   Py_ssize_t __pyx_t_13;
   Py_ssize_t __pyx_t_14;
   Py_ssize_t __pyx_t_15;
-  int __pyx_t_16;
-  Py_ssize_t __pyx_t_17;
-  int __pyx_t_18;
-  PyObject *__pyx_t_19 = NULL;
+  float __pyx_t_16;
+  int __pyx_t_17;
+  Py_ssize_t __pyx_t_18;
+  int __pyx_t_19;
+  PyObject *__pyx_t_20 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -1635,7 +1636,7 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
  *                 print("Iteration:", _)
  *         for covariate, response in zip(train_covariates, train_response):             # <<<<<<<<<<<<<<
  *             for x in range(len(model.weights)):
- *                 pred_response_and_real_response_diff = diff(model, response, covariate)
+ *                 pred_response_and_real_response_diff = diff(model, response[0], covariate)
  */
     __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 10, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
@@ -1743,7 +1744,7 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
  *                 print("Iteration:", _)
  *         for covariate, response in zip(train_covariates, train_response):
  *             for x in range(len(model.weights)):             # <<<<<<<<<<<<<<
- *                 pred_response_and_real_response_diff = diff(model, response, covariate)
+ *                 pred_response_and_real_response_diff = diff(model, response[0], covariate)
  *                 if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
  */
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_model, __pyx_n_s_weights); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 11, __pyx_L1_error)
@@ -1757,43 +1758,47 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
         /* "model_train.pyx":12
  *         for covariate, response in zip(train_covariates, train_response):
  *             for x in range(len(model.weights)):
- *                 pred_response_and_real_response_diff = diff(model, response, covariate)             # <<<<<<<<<<<<<<
+ *                 pred_response_and_real_response_diff = diff(model, response[0], covariate)             # <<<<<<<<<<<<<<
  *                 if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
  *                     model.weights[x] -= learing_rate * pred_response_and_real_response_diff
  */
-        __pyx_v_pred_response_and_real_response_diff = __pyx_f_11model_train_diff(__pyx_v_model, __pyx_v_response, __pyx_v_covariate);
+        __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_response, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 12, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        __pyx_t_16 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_16 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 12, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+        __pyx_v_pred_response_and_real_response_diff = __pyx_f_11model_train_diff(__pyx_v_model, __pyx_t_16, __pyx_v_covariate);
 
         /* "model_train.pyx":13
  *             for x in range(len(model.weights)):
- *                 pred_response_and_real_response_diff = diff(model, response, covariate)
+ *                 pred_response_and_real_response_diff = diff(model, response[0], covariate)
  *                 if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:             # <<<<<<<<<<<<<<
  *                     model.weights[x] -= learing_rate * pred_response_and_real_response_diff
  *             if double_learn:
  */
-        __pyx_t_16 = ((__pyx_v_skip_side_values == 0) != 0);
-        if (!__pyx_t_16) {
+        __pyx_t_17 = ((__pyx_v_skip_side_values == 0) != 0);
+        if (!__pyx_t_17) {
         } else {
-          __pyx_t_6 = __pyx_t_16;
+          __pyx_t_6 = __pyx_t_17;
           goto __pyx_L13_bool_binop_done;
         }
-        __pyx_t_16 = ((__pyx_v_pred_response_and_real_response_diff <= __pyx_v_mistake_to_skip) != 0);
-        if (!__pyx_t_16) {
+        __pyx_t_17 = ((__pyx_v_pred_response_and_real_response_diff <= __pyx_v_mistake_to_skip) != 0);
+        if (!__pyx_t_17) {
         } else {
-          __pyx_t_6 = __pyx_t_16;
+          __pyx_t_6 = __pyx_t_17;
           goto __pyx_L13_bool_binop_done;
         }
         __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_interations_b4_skip); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __pyx_t_10 = PyObject_RichCompare(__pyx_v__, __pyx_t_2, Py_LT); __Pyx_XGOTREF(__pyx_t_10); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 13, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-        __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely(__pyx_t_16 < 0)) __PYX_ERR(0, 13, __pyx_L1_error)
+        __pyx_t_17 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely(__pyx_t_17 < 0)) __PYX_ERR(0, 13, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-        __pyx_t_6 = __pyx_t_16;
+        __pyx_t_6 = __pyx_t_17;
         __pyx_L13_bool_binop_done:;
         if (__pyx_t_6) {
 
           /* "model_train.pyx":14
- *                 pred_response_and_real_response_diff = diff(model, response, covariate)
+ *                 pred_response_and_real_response_diff = diff(model, response[0], covariate)
  *                 if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
  *                     model.weights[x] -= learing_rate * pred_response_and_real_response_diff             # <<<<<<<<<<<<<<
  *             if double_learn:
@@ -1801,8 +1806,8 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
  */
           __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_model, __pyx_n_s_weights); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 14, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_10);
-          __pyx_t_17 = __pyx_v_x;
-          __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_10, __pyx_t_17, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)
+          __pyx_t_18 = __pyx_v_x;
+          __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_10, __pyx_t_18, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           __pyx_t_9 = PyFloat_FromDouble((__pyx_v_learing_rate * __pyx_v_pred_response_and_real_response_diff)); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 14, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_9);
@@ -1810,13 +1815,13 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
           __Pyx_GOTREF(__pyx_t_11);
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-          if (unlikely(__Pyx_SetItemInt(__pyx_t_10, __pyx_t_17, __pyx_t_11, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 1, 1) < 0)) __PYX_ERR(0, 14, __pyx_L1_error)
+          if (unlikely(__Pyx_SetItemInt(__pyx_t_10, __pyx_t_18, __pyx_t_11, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 1, 1) < 0)) __PYX_ERR(0, 14, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
           __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
           /* "model_train.pyx":13
  *             for x in range(len(model.weights)):
- *                 pred_response_and_real_response_diff = diff(model, response, covariate)
+ *                 pred_response_and_real_response_diff = diff(model, response[0], covariate)
  *                 if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:             # <<<<<<<<<<<<<<
  *                     model.weights[x] -= learing_rate * pred_response_and_real_response_diff
  *             if double_learn:
@@ -1829,7 +1834,7 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
  *                     model.weights[x] -= learing_rate * pred_response_and_real_response_diff
  *             if double_learn:             # <<<<<<<<<<<<<<
  *                 for x in reversed(range(len(model.weights))):
- *                     pred_response_and_real_response_diff = diff(model, response, covariate)
+ *                     pred_response_and_real_response_diff = diff(model, response[0], covariate)
  */
       __pyx_t_6 = (__pyx_v_double_learn != 0);
       if (__pyx_t_6) {
@@ -1838,7 +1843,7 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
  *                     model.weights[x] -= learing_rate * pred_response_and_real_response_diff
  *             if double_learn:
  *                 for x in reversed(range(len(model.weights))):             # <<<<<<<<<<<<<<
- *                     pred_response_and_real_response_diff = diff(model, response, covariate)
+ *                     pred_response_and_real_response_diff = diff(model, response[0], covariate)
  *                     if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
  */
         __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_model, __pyx_n_s_weights); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 16, __pyx_L1_error)
@@ -1851,47 +1856,51 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
           /* "model_train.pyx":17
  *             if double_learn:
  *                 for x in reversed(range(len(model.weights))):
- *                     pred_response_and_real_response_diff = diff(model, response, covariate)             # <<<<<<<<<<<<<<
+ *                     pred_response_and_real_response_diff = diff(model, response[0], covariate)             # <<<<<<<<<<<<<<
  *                     if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
  *                         model.weights[x] -= learing_rate * pred_response_and_real_response_diff
  */
-          __pyx_v_pred_response_and_real_response_diff = __pyx_f_11model_train_diff(__pyx_v_model, __pyx_v_response, __pyx_v_covariate);
+          __pyx_t_10 = __Pyx_GetItemInt(__pyx_v_response, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 17, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_10);
+          __pyx_t_16 = __pyx_PyFloat_AsFloat(__pyx_t_10); if (unlikely((__pyx_t_16 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 17, __pyx_L1_error)
+          __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+          __pyx_v_pred_response_and_real_response_diff = __pyx_f_11model_train_diff(__pyx_v_model, __pyx_t_16, __pyx_v_covariate);
 
           /* "model_train.pyx":18
  *                 for x in reversed(range(len(model.weights))):
- *                     pred_response_and_real_response_diff = diff(model, response, covariate)
+ *                     pred_response_and_real_response_diff = diff(model, response[0], covariate)
  *                     if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:             # <<<<<<<<<<<<<<
  *                         model.weights[x] -= learing_rate * pred_response_and_real_response_diff
  *             if add_rand_learn:
  */
-          __pyx_t_16 = ((__pyx_v_skip_side_values == 0) != 0);
-          if (!__pyx_t_16) {
+          __pyx_t_17 = ((__pyx_v_skip_side_values == 0) != 0);
+          if (!__pyx_t_17) {
           } else {
-            __pyx_t_6 = __pyx_t_16;
+            __pyx_t_6 = __pyx_t_17;
             goto __pyx_L20_bool_binop_done;
           }
-          __pyx_t_16 = ((__pyx_v_pred_response_and_real_response_diff <= __pyx_v_mistake_to_skip) != 0);
-          if (!__pyx_t_16) {
+          __pyx_t_17 = ((__pyx_v_pred_response_and_real_response_diff <= __pyx_v_mistake_to_skip) != 0);
+          if (!__pyx_t_17) {
           } else {
-            __pyx_t_6 = __pyx_t_16;
+            __pyx_t_6 = __pyx_t_17;
             goto __pyx_L20_bool_binop_done;
           }
           __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_interations_b4_skip); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 18, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_10);
           __pyx_t_11 = PyObject_RichCompare(__pyx_v__, __pyx_t_10, Py_LT); __Pyx_XGOTREF(__pyx_t_11); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 18, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-          __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_11); if (unlikely(__pyx_t_16 < 0)) __PYX_ERR(0, 18, __pyx_L1_error)
+          __pyx_t_17 = __Pyx_PyObject_IsTrue(__pyx_t_11); if (unlikely(__pyx_t_17 < 0)) __PYX_ERR(0, 18, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-          __pyx_t_6 = __pyx_t_16;
+          __pyx_t_6 = __pyx_t_17;
           __pyx_L20_bool_binop_done:;
           if (__pyx_t_6) {
 
             /* "model_train.pyx":19
- *                     pred_response_and_real_response_diff = diff(model, response, covariate)
+ *                     pred_response_and_real_response_diff = diff(model, response[0], covariate)
  *                     if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
  *                         model.weights[x] -= learing_rate * pred_response_and_real_response_diff             # <<<<<<<<<<<<<<
  *             if add_rand_learn:
- *                 pred_response_and_real_response_diff = diff(model, response, covariate)
+ *                 pred_response_and_real_response_diff = diff(model, response[0], covariate)
  */
             __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_v_model, __pyx_n_s_weights); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 19, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_11);
@@ -1910,7 +1919,7 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
 
             /* "model_train.pyx":18
  *                 for x in reversed(range(len(model.weights))):
- *                     pred_response_and_real_response_diff = diff(model, response, covariate)
+ *                     pred_response_and_real_response_diff = diff(model, response[0], covariate)
  *                     if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:             # <<<<<<<<<<<<<<
  *                         model.weights[x] -= learing_rate * pred_response_and_real_response_diff
  *             if add_rand_learn:
@@ -1923,7 +1932,7 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
  *                     model.weights[x] -= learing_rate * pred_response_and_real_response_diff
  *             if double_learn:             # <<<<<<<<<<<<<<
  *                 for x in reversed(range(len(model.weights))):
- *                     pred_response_and_real_response_diff = diff(model, response, covariate)
+ *                     pred_response_and_real_response_diff = diff(model, response[0], covariate)
  */
       }
 
@@ -1931,7 +1940,7 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
  *                     if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
  *                         model.weights[x] -= learing_rate * pred_response_and_real_response_diff
  *             if add_rand_learn:             # <<<<<<<<<<<<<<
- *                 pred_response_and_real_response_diff = diff(model, response, covariate)
+ *                 pred_response_and_real_response_diff = diff(model, response[0], covariate)
  *                 if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
  */
       __pyx_t_6 = (__pyx_v_add_rand_learn != 0);
@@ -1940,43 +1949,47 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
         /* "model_train.pyx":21
  *                         model.weights[x] -= learing_rate * pred_response_and_real_response_diff
  *             if add_rand_learn:
- *                 pred_response_and_real_response_diff = diff(model, response, covariate)             # <<<<<<<<<<<<<<
+ *                 pred_response_and_real_response_diff = diff(model, response[0], covariate)             # <<<<<<<<<<<<<<
  *                 if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
  *                     rand = randint(0, len(model.weights)-1)
  */
-        __pyx_v_pred_response_and_real_response_diff = __pyx_f_11model_train_diff(__pyx_v_model, __pyx_v_response, __pyx_v_covariate);
+        __pyx_t_11 = __Pyx_GetItemInt(__pyx_v_response, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 21, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_11);
+        __pyx_t_16 = __pyx_PyFloat_AsFloat(__pyx_t_11); if (unlikely((__pyx_t_16 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 21, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+        __pyx_v_pred_response_and_real_response_diff = __pyx_f_11model_train_diff(__pyx_v_model, __pyx_t_16, __pyx_v_covariate);
 
         /* "model_train.pyx":22
  *             if add_rand_learn:
- *                 pred_response_and_real_response_diff = diff(model, response, covariate)
+ *                 pred_response_and_real_response_diff = diff(model, response[0], covariate)
  *                 if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:             # <<<<<<<<<<<<<<
  *                     rand = randint(0, len(model.weights)-1)
  *                     model.weights[rand] -= learing_rate * pred_response_and_real_response_diff
  */
-        __pyx_t_16 = ((__pyx_v_skip_side_values == 0) != 0);
-        if (!__pyx_t_16) {
+        __pyx_t_17 = ((__pyx_v_skip_side_values == 0) != 0);
+        if (!__pyx_t_17) {
         } else {
-          __pyx_t_6 = __pyx_t_16;
+          __pyx_t_6 = __pyx_t_17;
           goto __pyx_L25_bool_binop_done;
         }
-        __pyx_t_16 = ((__pyx_v_pred_response_and_real_response_diff <= __pyx_v_mistake_to_skip) != 0);
-        if (!__pyx_t_16) {
+        __pyx_t_17 = ((__pyx_v_pred_response_and_real_response_diff <= __pyx_v_mistake_to_skip) != 0);
+        if (!__pyx_t_17) {
         } else {
-          __pyx_t_6 = __pyx_t_16;
+          __pyx_t_6 = __pyx_t_17;
           goto __pyx_L25_bool_binop_done;
         }
         __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_interations_b4_skip); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 22, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_11);
         __pyx_t_2 = PyObject_RichCompare(__pyx_v__, __pyx_t_11, Py_LT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 22, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-        __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_16 < 0)) __PYX_ERR(0, 22, __pyx_L1_error)
+        __pyx_t_17 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_17 < 0)) __PYX_ERR(0, 22, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-        __pyx_t_6 = __pyx_t_16;
+        __pyx_t_6 = __pyx_t_17;
         __pyx_L25_bool_binop_done:;
         if (__pyx_t_6) {
 
           /* "model_train.pyx":23
- *                 pred_response_and_real_response_diff = diff(model, response, covariate)
+ *                 pred_response_and_real_response_diff = diff(model, response[0], covariate)
  *                 if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
  *                     rand = randint(0, len(model.weights)-1)             # <<<<<<<<<<<<<<
  *                     model.weights[rand] -= learing_rate * pred_response_and_real_response_diff
@@ -1991,7 +2004,7 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
           __pyx_t_9 = PyInt_FromSsize_t((__pyx_t_13 - 1)); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 23, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_9);
           __pyx_t_10 = NULL;
-          __pyx_t_18 = 0;
+          __pyx_t_19 = 0;
           if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_11))) {
             __pyx_t_10 = PyMethod_GET_SELF(__pyx_t_11);
             if (likely(__pyx_t_10)) {
@@ -1999,13 +2012,13 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
               __Pyx_INCREF(__pyx_t_10);
               __Pyx_INCREF(function);
               __Pyx_DECREF_SET(__pyx_t_11, function);
-              __pyx_t_18 = 1;
+              __pyx_t_19 = 1;
             }
           }
           #if CYTHON_FAST_PYCALL
           if (PyFunction_Check(__pyx_t_11)) {
             PyObject *__pyx_temp[3] = {__pyx_t_10, __pyx_int_0, __pyx_t_9};
-            __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_11, __pyx_temp+1-__pyx_t_18, 2+__pyx_t_18); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 23, __pyx_L1_error)
+            __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_11, __pyx_temp+1-__pyx_t_19, 2+__pyx_t_19); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 23, __pyx_L1_error)
             __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
             __Pyx_GOTREF(__pyx_t_2);
             __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
@@ -2014,27 +2027,27 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
           #if CYTHON_FAST_PYCCALL
           if (__Pyx_PyFastCFunction_Check(__pyx_t_11)) {
             PyObject *__pyx_temp[3] = {__pyx_t_10, __pyx_int_0, __pyx_t_9};
-            __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_11, __pyx_temp+1-__pyx_t_18, 2+__pyx_t_18); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 23, __pyx_L1_error)
+            __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_11, __pyx_temp+1-__pyx_t_19, 2+__pyx_t_19); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 23, __pyx_L1_error)
             __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
             __Pyx_GOTREF(__pyx_t_2);
             __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
           } else
           #endif
           {
-            __pyx_t_19 = PyTuple_New(2+__pyx_t_18); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 23, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_19);
+            __pyx_t_20 = PyTuple_New(2+__pyx_t_19); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 23, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_20);
             if (__pyx_t_10) {
-              __Pyx_GIVEREF(__pyx_t_10); PyTuple_SET_ITEM(__pyx_t_19, 0, __pyx_t_10); __pyx_t_10 = NULL;
+              __Pyx_GIVEREF(__pyx_t_10); PyTuple_SET_ITEM(__pyx_t_20, 0, __pyx_t_10); __pyx_t_10 = NULL;
             }
             __Pyx_INCREF(__pyx_int_0);
             __Pyx_GIVEREF(__pyx_int_0);
-            PyTuple_SET_ITEM(__pyx_t_19, 0+__pyx_t_18, __pyx_int_0);
+            PyTuple_SET_ITEM(__pyx_t_20, 0+__pyx_t_19, __pyx_int_0);
             __Pyx_GIVEREF(__pyx_t_9);
-            PyTuple_SET_ITEM(__pyx_t_19, 1+__pyx_t_18, __pyx_t_9);
+            PyTuple_SET_ITEM(__pyx_t_20, 1+__pyx_t_19, __pyx_t_9);
             __pyx_t_9 = 0;
-            __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_11, __pyx_t_19, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 23, __pyx_L1_error)
+            __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_11, __pyx_t_20, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 23, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_2);
-            __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
+            __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
           }
           __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
           __Pyx_XDECREF_SET(__pyx_v_rand, __pyx_t_2);
@@ -2051,13 +2064,13 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_INCREF(__pyx_v_rand);
           __pyx_t_11 = __pyx_v_rand;
-          __pyx_t_19 = __Pyx_PyObject_GetItem(__pyx_t_2, __pyx_t_11); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 24, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_19);
+          __pyx_t_20 = __Pyx_PyObject_GetItem(__pyx_t_2, __pyx_t_11); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 24, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_20);
           __pyx_t_9 = PyFloat_FromDouble((__pyx_v_learing_rate * __pyx_v_pred_response_and_real_response_diff)); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 24, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_9);
-          __pyx_t_10 = PyNumber_InPlaceSubtract(__pyx_t_19, __pyx_t_9); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 24, __pyx_L1_error)
+          __pyx_t_10 = PyNumber_InPlaceSubtract(__pyx_t_20, __pyx_t_9); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 24, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_10);
-          __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
+          __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
           if (unlikely(PyObject_SetItem(__pyx_t_2, __pyx_t_11, __pyx_t_10) < 0)) __PYX_ERR(0, 24, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
@@ -2066,7 +2079,7 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
 
           /* "model_train.pyx":22
  *             if add_rand_learn:
- *                 pred_response_and_real_response_diff = diff(model, response, covariate)
+ *                 pred_response_and_real_response_diff = diff(model, response[0], covariate)
  *                 if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:             # <<<<<<<<<<<<<<
  *                     rand = randint(0, len(model.weights)-1)
  *                     model.weights[rand] -= learing_rate * pred_response_and_real_response_diff
@@ -2077,7 +2090,7 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
  *                     if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
  *                         model.weights[x] -= learing_rate * pred_response_and_real_response_diff
  *             if add_rand_learn:             # <<<<<<<<<<<<<<
- *                 pred_response_and_real_response_diff = diff(model, response, covariate)
+ *                 pred_response_and_real_response_diff = diff(model, response[0], covariate)
  *                 if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
  */
       }
@@ -2087,7 +2100,7 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
  *                 print("Iteration:", _)
  *         for covariate, response in zip(train_covariates, train_response):             # <<<<<<<<<<<<<<
  *             for x in range(len(model.weights)):
- *                 pred_response_and_real_response_diff = diff(model, response, covariate)
+ *                 pred_response_and_real_response_diff = diff(model, response[0], covariate)
  */
     }
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -2120,7 +2133,7 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
   __Pyx_XDECREF(__pyx_t_9);
   __Pyx_XDECREF(__pyx_t_10);
   __Pyx_XDECREF(__pyx_t_11);
-  __Pyx_XDECREF(__pyx_t_19);
+  __Pyx_XDECREF(__pyx_t_20);
   __Pyx_AddTraceback("model_train.train", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -2136,65 +2149,42 @@ static PyObject *__pyx_pf_11model_train_train(CYTHON_UNUSED PyObject *__pyx_self
 /* "model_train.pyx":27
  * 
  * 
- * cdef float diff(model, response, covariate):             # <<<<<<<<<<<<<<
- *     cdef float real_response = response[0]
- *     return _predict_one(model, covariate) - real_response
+ * cdef float diff(model, float response, covariate):             # <<<<<<<<<<<<<<
+ *     return _predict_one(model, covariate) - response
+ * 
  */
 
-static float __pyx_f_11model_train_diff(PyObject *__pyx_v_model, PyObject *__pyx_v_response, PyObject *__pyx_v_covariate) {
-  float __pyx_v_real_response;
+static float __pyx_f_11model_train_diff(PyObject *__pyx_v_model, float __pyx_v_response, PyObject *__pyx_v_covariate) {
   float __pyx_r;
   __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  float __pyx_t_2;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("diff", 0);
 
   /* "model_train.pyx":28
  * 
- * cdef float diff(model, response, covariate):
- *     cdef float real_response = response[0]             # <<<<<<<<<<<<<<
- *     return _predict_one(model, covariate) - real_response
- * 
- */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_response, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_2 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 28, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_real_response = __pyx_t_2;
-
-  /* "model_train.pyx":29
- * cdef float diff(model, response, covariate):
- *     cdef float real_response = response[0]
- *     return _predict_one(model, covariate) - real_response             # <<<<<<<<<<<<<<
+ * cdef float diff(model, float response, covariate):
+ *     return _predict_one(model, covariate) - response             # <<<<<<<<<<<<<<
  * 
  * cdef float _predict_one(model, line_covariates):
  */
-  __pyx_r = (__pyx_f_11model_train__predict_one(__pyx_v_model, __pyx_v_covariate) - __pyx_v_real_response);
+  __pyx_r = (__pyx_f_11model_train__predict_one(__pyx_v_model, __pyx_v_covariate) - __pyx_v_response);
   goto __pyx_L0;
 
   /* "model_train.pyx":27
  * 
  * 
- * cdef float diff(model, response, covariate):             # <<<<<<<<<<<<<<
- *     cdef float real_response = response[0]
- *     return _predict_one(model, covariate) - real_response
+ * cdef float diff(model, float response, covariate):             # <<<<<<<<<<<<<<
+ *     return _predict_one(model, covariate) - response
+ * 
  */
 
   /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_WriteUnraisable("model_train.diff", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
-  __pyx_r = 0;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "model_train.pyx":31
- *     return _predict_one(model, covariate) - real_response
+/* "model_train.pyx":30
+ *     return _predict_one(model, covariate) - response
  * 
  * cdef float _predict_one(model, line_covariates):             # <<<<<<<<<<<<<<
  *     cdef float response = 0
@@ -2222,7 +2212,7 @@ static float __pyx_f_11model_train__predict_one(PyObject *__pyx_v_model, PyObjec
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_predict_one", 0);
 
-  /* "model_train.pyx":32
+  /* "model_train.pyx":31
  * 
  * cdef float _predict_one(model, line_covariates):
  *     cdef float response = 0             # <<<<<<<<<<<<<<
@@ -2231,7 +2221,7 @@ static float __pyx_f_11model_train__predict_one(PyObject *__pyx_v_model, PyObjec
  */
   __pyx_v_response = 0.0;
 
-  /* "model_train.pyx":33
+  /* "model_train.pyx":32
  * cdef float _predict_one(model, line_covariates):
  *     cdef float response = 0
  *     for x,weight in enumerate(model.weights):             # <<<<<<<<<<<<<<
@@ -2240,15 +2230,15 @@ static float __pyx_f_11model_train__predict_one(PyObject *__pyx_v_model, PyObjec
  */
   __Pyx_INCREF(__pyx_int_0);
   __pyx_t_1 = __pyx_int_0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_model, __pyx_n_s_weights); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_model, __pyx_n_s_weights); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (likely(PyList_CheckExact(__pyx_t_2)) || PyTuple_CheckExact(__pyx_t_2)) {
     __pyx_t_3 = __pyx_t_2; __Pyx_INCREF(__pyx_t_3); __pyx_t_4 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_4 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 33, __pyx_L1_error)
+    __pyx_t_4 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 32, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 33, __pyx_L1_error)
+    __pyx_t_5 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 32, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   for (;;) {
@@ -2256,17 +2246,17 @@ static float __pyx_f_11model_train__predict_one(PyObject *__pyx_v_model, PyObjec
       if (likely(PyList_CheckExact(__pyx_t_3))) {
         if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_3)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 33, __pyx_L1_error)
+        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 32, __pyx_L1_error)
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 33, __pyx_L1_error)
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       } else {
         if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 33, __pyx_L1_error)
+        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 32, __pyx_L1_error)
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 33, __pyx_L1_error)
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       }
@@ -2276,7 +2266,7 @@ static float __pyx_f_11model_train__predict_one(PyObject *__pyx_v_model, PyObjec
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 33, __pyx_L1_error)
+          else __PYX_ERR(0, 32, __pyx_L1_error)
         }
         break;
       }
@@ -2286,51 +2276,51 @@ static float __pyx_f_11model_train__predict_one(PyObject *__pyx_v_model, PyObjec
     __pyx_t_2 = 0;
     __Pyx_INCREF(__pyx_t_1);
     __Pyx_XDECREF_SET(__pyx_v_x, __pyx_t_1);
-    __pyx_t_2 = __Pyx_PyInt_AddObjC(__pyx_t_1, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 33, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_AddObjC(__pyx_t_1, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1);
     __pyx_t_1 = __pyx_t_2;
     __pyx_t_2 = 0;
 
-    /* "model_train.pyx":34
+    /* "model_train.pyx":33
  *     cdef float response = 0
  *     for x,weight in enumerate(model.weights):
  *         if x < len(line_covariates):             # <<<<<<<<<<<<<<
  *             response += weight * line_covariates[x]
  * 
  */
-    __pyx_t_6 = PyObject_Length(__pyx_v_line_covariates); if (unlikely(__pyx_t_6 == ((Py_ssize_t)-1))) __PYX_ERR(0, 34, __pyx_L1_error)
-    __pyx_t_2 = PyInt_FromSsize_t(__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 34, __pyx_L1_error)
+    __pyx_t_6 = PyObject_Length(__pyx_v_line_covariates); if (unlikely(__pyx_t_6 == ((Py_ssize_t)-1))) __PYX_ERR(0, 33, __pyx_L1_error)
+    __pyx_t_2 = PyInt_FromSsize_t(__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 33, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_7 = PyObject_RichCompare(__pyx_v_x, __pyx_t_2, Py_LT); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 34, __pyx_L1_error)
+    __pyx_t_7 = PyObject_RichCompare(__pyx_v_x, __pyx_t_2, Py_LT); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 33, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 34, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 33, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     if (__pyx_t_8) {
 
-      /* "model_train.pyx":35
+      /* "model_train.pyx":34
  *     for x,weight in enumerate(model.weights):
  *         if x < len(line_covariates):
  *             response += weight * line_covariates[x]             # <<<<<<<<<<<<<<
  * 
  *     return response + model.weights[-1]
  */
-      __pyx_t_7 = PyFloat_FromDouble(__pyx_v_response); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 35, __pyx_L1_error)
+      __pyx_t_7 = PyFloat_FromDouble(__pyx_v_response); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 34, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_v_line_covariates, __pyx_v_x); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 35, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_v_line_covariates, __pyx_v_x); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 34, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_9 = PyNumber_Multiply(__pyx_v_weight, __pyx_t_2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 35, __pyx_L1_error)
+      __pyx_t_9 = PyNumber_Multiply(__pyx_v_weight, __pyx_t_2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 34, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_2 = PyNumber_InPlaceAdd(__pyx_t_7, __pyx_t_9); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 35, __pyx_L1_error)
+      __pyx_t_2 = PyNumber_InPlaceAdd(__pyx_t_7, __pyx_t_9); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 34, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-      __pyx_t_10 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_10 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 35, __pyx_L1_error)
+      __pyx_t_10 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_10 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 34, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __pyx_v_response = __pyx_t_10;
 
-      /* "model_train.pyx":34
+      /* "model_train.pyx":33
  *     cdef float response = 0
  *     for x,weight in enumerate(model.weights):
  *         if x < len(line_covariates):             # <<<<<<<<<<<<<<
@@ -2339,7 +2329,7 @@ static float __pyx_f_11model_train__predict_one(PyObject *__pyx_v_model, PyObjec
  */
     }
 
-    /* "model_train.pyx":33
+    /* "model_train.pyx":32
  * cdef float _predict_one(model, line_covariates):
  *     cdef float response = 0
  *     for x,weight in enumerate(model.weights):             # <<<<<<<<<<<<<<
@@ -2350,29 +2340,29 @@ static float __pyx_f_11model_train__predict_one(PyObject *__pyx_v_model, PyObjec
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "model_train.pyx":37
+  /* "model_train.pyx":36
  *             response += weight * line_covariates[x]
  * 
  *     return response + model.weights[-1]             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_response); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_response); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_model, __pyx_n_s_weights); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_model, __pyx_n_s_weights); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_3, -1L, long, 1, __Pyx_PyInt_From_long, 0, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_3, -1L, long, 1, __Pyx_PyInt_From_long, 0, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyNumber_Add(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_Add(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_10 = __pyx_PyFloat_AsFloat(__pyx_t_3); if (unlikely((__pyx_t_10 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_10 = __pyx_PyFloat_AsFloat(__pyx_t_3); if (unlikely((__pyx_t_10 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_r = __pyx_t_10;
   goto __pyx_L0;
 
-  /* "model_train.pyx":31
- *     return _predict_one(model, covariate) - real_response
+  /* "model_train.pyx":30
+ *     return _predict_one(model, covariate) - response
  * 
  * cdef float _predict_one(model, line_covariates):             # <<<<<<<<<<<<<<
  *     cdef float response = 0
@@ -2482,7 +2472,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 7, __pyx_L1_error)
   __pyx_builtin_zip = __Pyx_GetBuiltinName(__pyx_n_s_zip); if (!__pyx_builtin_zip) __PYX_ERR(0, 10, __pyx_L1_error)
   __pyx_builtin_reversed = __Pyx_GetBuiltinName(__pyx_n_s_reversed); if (!__pyx_builtin_reversed) __PYX_ERR(0, 16, __pyx_L1_error)
-  __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 33, __pyx_L1_error)
+  __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 32, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -3741,72 +3731,6 @@ static PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* key) {
 }
 #endif
 
-/* PyErrFetchRestore */
-#if CYTHON_FAST_THREAD_STATE
-static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    tmp_type = tstate->curexc_type;
-    tmp_value = tstate->curexc_value;
-    tmp_tb = tstate->curexc_traceback;
-    tstate->curexc_type = type;
-    tstate->curexc_value = value;
-    tstate->curexc_traceback = tb;
-    Py_XDECREF(tmp_type);
-    Py_XDECREF(tmp_value);
-    Py_XDECREF(tmp_tb);
-}
-static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
-    *type = tstate->curexc_type;
-    *value = tstate->curexc_value;
-    *tb = tstate->curexc_traceback;
-    tstate->curexc_type = 0;
-    tstate->curexc_value = 0;
-    tstate->curexc_traceback = 0;
-}
-#endif
-
-/* WriteUnraisableException */
-static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
-                                  CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
-                                  int full_traceback, CYTHON_UNUSED int nogil) {
-    PyObject *old_exc, *old_val, *old_tb;
-    PyObject *ctx;
-    __Pyx_PyThreadState_declare
-#ifdef WITH_THREAD
-    PyGILState_STATE state;
-    if (nogil)
-        state = PyGILState_Ensure();
-#ifdef _MSC_VER
-    else state = (PyGILState_STATE)-1;
-#endif
-#endif
-    __Pyx_PyThreadState_assign
-    __Pyx_ErrFetch(&old_exc, &old_val, &old_tb);
-    if (full_traceback) {
-        Py_XINCREF(old_exc);
-        Py_XINCREF(old_val);
-        Py_XINCREF(old_tb);
-        __Pyx_ErrRestore(old_exc, old_val, old_tb);
-        PyErr_PrintEx(1);
-    }
-    #if PY_MAJOR_VERSION < 3
-    ctx = PyString_FromString(name);
-    #else
-    ctx = PyUnicode_FromString(name);
-    #endif
-    __Pyx_ErrRestore(old_exc, old_val, old_tb);
-    if (!ctx) {
-        PyErr_WriteUnraisable(Py_None);
-    } else {
-        PyErr_WriteUnraisable(ctx);
-        Py_DECREF(ctx);
-    }
-#ifdef WITH_THREAD
-    if (nogil)
-        PyGILState_Release(state);
-#endif
-}
-
 /* PyIntBinop */
 #if !CYTHON_COMPILING_IN_PYPY
 static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, int inplace, int zerodivision_check) {
@@ -3930,6 +3854,72 @@ static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED
     return (inplace ? PyNumber_InPlaceAdd : PyNumber_Add)(op1, op2);
 }
 #endif
+
+/* PyErrFetchRestore */
+#if CYTHON_FAST_THREAD_STATE
+static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    tmp_type = tstate->curexc_type;
+    tmp_value = tstate->curexc_value;
+    tmp_tb = tstate->curexc_traceback;
+    tstate->curexc_type = type;
+    tstate->curexc_value = value;
+    tstate->curexc_traceback = tb;
+    Py_XDECREF(tmp_type);
+    Py_XDECREF(tmp_value);
+    Py_XDECREF(tmp_tb);
+}
+static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
+    *type = tstate->curexc_type;
+    *value = tstate->curexc_value;
+    *tb = tstate->curexc_traceback;
+    tstate->curexc_type = 0;
+    tstate->curexc_value = 0;
+    tstate->curexc_traceback = 0;
+}
+#endif
+
+/* WriteUnraisableException */
+static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
+                                  CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
+                                  int full_traceback, CYTHON_UNUSED int nogil) {
+    PyObject *old_exc, *old_val, *old_tb;
+    PyObject *ctx;
+    __Pyx_PyThreadState_declare
+#ifdef WITH_THREAD
+    PyGILState_STATE state;
+    if (nogil)
+        state = PyGILState_Ensure();
+#ifdef _MSC_VER
+    else state = (PyGILState_STATE)-1;
+#endif
+#endif
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&old_exc, &old_val, &old_tb);
+    if (full_traceback) {
+        Py_XINCREF(old_exc);
+        Py_XINCREF(old_val);
+        Py_XINCREF(old_tb);
+        __Pyx_ErrRestore(old_exc, old_val, old_tb);
+        PyErr_PrintEx(1);
+    }
+    #if PY_MAJOR_VERSION < 3
+    ctx = PyString_FromString(name);
+    #else
+    ctx = PyUnicode_FromString(name);
+    #endif
+    __Pyx_ErrRestore(old_exc, old_val, old_tb);
+    if (!ctx) {
+        PyErr_WriteUnraisable(Py_None);
+    } else {
+        PyErr_WriteUnraisable(ctx);
+        Py_DECREF(ctx);
+    }
+#ifdef WITH_THREAD
+    if (nogil)
+        PyGILState_Release(state);
+#endif
+}
 
 /* Import */
 static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level) {

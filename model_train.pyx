@@ -9,24 +9,23 @@ def train(model, train_covariates, train_response, float learing_rate = 0.03, in
                 print("Iteration:", _)
         for covariate, response in zip(train_covariates, train_response):
             for x in range(len(model.weights)):
-                pred_response_and_real_response_diff = diff(model, response, covariate)
+                pred_response_and_real_response_diff = diff(model, response[0], covariate)
                 if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
                     model.weights[x] -= learing_rate * pred_response_and_real_response_diff
             if double_learn:
                 for x in reversed(range(len(model.weights))):
-                    pred_response_and_real_response_diff = diff(model, response, covariate)
+                    pred_response_and_real_response_diff = diff(model, response[0], covariate)
                     if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
                         model.weights[x] -= learing_rate * pred_response_and_real_response_diff
             if add_rand_learn:
-                pred_response_and_real_response_diff = diff(model, response, covariate)
+                pred_response_and_real_response_diff = diff(model, response[0], covariate)
                 if  skip_side_values is False or pred_response_and_real_response_diff <= mistake_to_skip or _  < interations_b4_skip:
                     rand = randint(0, len(model.weights)-1)
                     model.weights[rand] -= learing_rate * pred_response_and_real_response_diff
 
 
-cdef float diff(model, float[] response, covariate):
-    cdef float real_response = response[0]
-    return _predict_one(model, covariate) - real_response
+cdef float diff(model, float response, covariate):
+    return _predict_one(model, covariate) - response
 
 cdef float _predict_one(model, line_covariates):
     cdef float response = 0

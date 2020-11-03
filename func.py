@@ -1,7 +1,6 @@
 import random
 import math
 
-
 def split_data(data, covariate_headers, response_header, training_size, separator, shuffle = True, unwanted_sings = [], new_line_sing = '\n'):       #split data to test and learn, data to wejsc, result to wyjscie
     headers = data.readline().split(separator)
     headers[-1] = headers[-1].replace(new_line_sing, "")
@@ -81,7 +80,7 @@ def load_model(model, file_name = "weights.cfg"):
         with open(file_name, "r") as f:
             weights = f.readline()
         weights = weights.split(';')
-        weights.pop(-1)
+        weights.pop(-1) #bc last is empty string
         if is_weights_valid(weights) is False:     #means if file is empty
             print("model loaded failure. Check if file is not empty and if it contains valid weights")
             return False
