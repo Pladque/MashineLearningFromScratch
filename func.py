@@ -85,8 +85,9 @@ def load_model(model, file_name = "weights.cfg"):
         if is_weights_valid(weights) is False:     #means if file is empty
             print("model loaded failure. Check if file is not empty and if it contains valid weights")
             return False
-        for x, weight in enumerate(weights):
-            weights[x] = float(weight)
+
+        weights = [float(weight) for weight in weights]
+        
         model = model.load_weights(weights)
         print("model loaded succesfully")
     except:
@@ -99,8 +100,8 @@ def scale(data, custom_divider = False, index = False):
             for y, line in enumerate(data):
                 data[y][x] = line[x]/custom_divider
     elif custom_divider is not False and index is not False:
-        for y, line in enumerate(data):
-            data[y][index] = line[index]/custom_divider
+        data = [line[index]/custom_divider for line in data]
+
     else:
         for x in range(len(data[0])):
             max = float("-inf")

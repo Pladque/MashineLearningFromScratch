@@ -7,9 +7,9 @@ import sys
 covariate_header_indexes = [ "sex", "studytime","failures", "absences", "G1", "G2" ]       #has to have same order as file
 response_header = "G3"
 
-LOAD_MODEL = True
+LOAD_MODEL = False
 SAVE_MODEL = False
-AMOUNT_OF_LEARNS = 20  #how many times will you let model learns, weights from best results will be saved
+AMOUNT_OF_LEARNS = 1  #how many times will you let model learns, weights from best results will be saved
 
 if __name__ == '__main__':
     start = time()

@@ -24,7 +24,7 @@ def train(model, train_covariates, train_response, float learing_rate = 0.03, in
                     model.weights[rand] -= learing_rate * pred_response_and_real_response_diff
 
 
-cdef float diff(model, response, covariate):
+cdef float diff(model, float[] response, covariate):
     cdef float real_response = response[0]
     return _predict_one(model, covariate) - real_response
 
